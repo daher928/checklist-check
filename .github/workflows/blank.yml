@@ -1,0 +1,19 @@
+name: PR Checklist Validation
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  validate_checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for checklist completion
+        id: checklist
+        run: |
+          CHECKLIST=$(grep -E "\[ \]" $GITHUB_EVENT_PATH | wc -l)
+          if [ "$CHECKLIST" -gt 0 ]; then
+            echo "Checklist is incomplete. Please check all items before merging." && exit 1
+          else
+            echo "Checklist is complete."
+          fi
